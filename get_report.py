@@ -162,16 +162,14 @@ def get_report(period, start_, end_) -> pandas.DataFrame:
           if report_status_time > timelimit:
                 report_status_time = report_status_time.strftime("%Y-%m-%d %H:%M")
                 row = [report_client, report_client_id, report_claim_id,
-                    report_pickup_address, report_receiver_address, report_receiver_phone, report_receiver_name, report_comment,
+                    report_pickup_address, report_receiver_address, report_comment,
                     report_status, report_status_time,report_return_reason,
                     report_longitude, report_latitude, report_status_is_final]
                 report.append(row)
     result_frame = pandas.DataFrame(report,
-                                    columns=["client", "client_id", "claim_id",
-                                             "pickup_address", "receiver_address", "receiver_phone",
-                                             "receiver_name", "comment", "status", "status_time", "return_reason",
-                                             "lon", "lat", "is_final"])
-
+                                    columns=["client", "client_id", "claim_id", "pickup_address", "receiver_address", 
+                                             "comment", "status", "status_time", "return_reason", "lon", "lat", "is_final"])
+    # "receiver_phone", "receiver_name"
     return result_frame
 
 
