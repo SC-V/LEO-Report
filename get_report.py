@@ -157,6 +157,16 @@ def get_report(period, start_, end_) -> pandas.DataFrame:
                       report_weight_kg = report_weight_kg + float(re.findall(r"(\d*\.?\d+)\s*(kgs?)\b", str(item['title']), flags=re.IGNORECASE)[0][0])
           except:
               report_weight_kg = "---"
+          try:
+              report_point_A_time = datetime.datetime.strptime(claim['route_points'][0]['visited_at']['actual'],"%Y-%m-%dT%H:%M:%S.%f%z").astimezone(timezone(client_timezone))
+              report_point_A_time = report_point_A_time.strftime("%Y-%m-%dT%H:%M:%S.%f%z")
+          except:
+              report_point_A_time = "Point A missing pick datetime"
+          try:
+              report_point_B_time = datetime.datetime.strptime(claim['route_points'][1]['visited_at']['actual'],"%Y-%m-%dT%H:%M:%S.%f%z").astimezone(timezone(client_timezone))
+              report_point_B_time = report_point_B_time.strftime("%Y-%m-%dT%H:%M:%S.%f%z")
+          except:
+              report_point_B_time = "Point B was never visited"
           
           timelimit = datetime.datetime.now(timezone(client_timezone)).replace(hour=23, minute=59, second=59, microsecond=999999) - datetime.timedelta(days=period)
           if report_status_time > timelimit:
@@ -164,12 +174,12 @@ def get_report(period, start_, end_) -> pandas.DataFrame:
                 row = [report_client, report_client_id, report_claim_id,
                     report_pickup_address, report_receiver_address, report_comment,
                     report_status, report_status_time,report_return_reason,
-                    report_longitude, report_latitude, report_status_is_final]
+                    report_longitude, report_latitude, report_status_is_final, report_point_A_time, report_point_B_time]
                 report.append(row)
     result_frame = pandas.DataFrame(report,
                                     columns=["client", "client_id", "claim_id", "pickup_address", "receiver_address", 
-                                             "comment", "status", "status_time", "return_reason", "lon", "lat", "is_final"])
-    # "receiver_phone", "receiver_name"
+                                             "comment", "status", "status_time", "return_reason", "lon", "lat", "is_final",
+                                             "point_B_time", "point_A_time_pick"])
     return result_frame
 
 
